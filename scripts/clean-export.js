@@ -11,12 +11,14 @@ async function removeTxtRecursive(dir) {
     if (err && err.code === "ENOENT") return;
     throw err;
   }
-
   for (const ent of entries) {
     const full = path.join(dir, ent.name);
     if (ent.isDirectory()) {
       await removeTxtRecursive(full);
     } else if (ent.isFile() && path.extname(ent.name).toLowerCase() === ".txt") {
+      if (ent.name.toLowerCase() === "robots.txt") {
+        continue;
+      }
       await fs.unlink(full);
     }
   }
